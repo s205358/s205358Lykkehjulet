@@ -1,6 +1,37 @@
 <resources>
     <string name="app_name">s205358 Lykkehjulet</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Fragments -->
     <string name="start_game">Start Spil</string>
+
+    <!-- Categories -->
+    <string name="category1">Grøntsager</string>
+    <string name="category2">Skuespillere</string>
+    <string name="category3">Bilmærker</string>
+
+    <!-- Words -->
+    <string name="category1_word1">Agurk</string>
+    <string name="category1_word2">Artiskok</string>
+    <string name="category1_word3">Asparges</string>
+    <string name="category1_word4">Bladselleri</string>
+    <string name="category1_word5">Blomkål</string>
+    <string name="category1_word6">Gulerod</string>
+    <string name="category1_word7">Pastinak</string>
+
+    <string name="category2_word1">Birthe Neumann</string>
+    <string name="category2_word2">Nicolas Bro</string>
+    <string name="category2_word3">Mads Mikkelsen</string>
+    <string name="category2_word4">Nikolaj Coster-Waldau</string>
+    <string name="category2_word5">Ulrich Thomsen</string>
+    <string name="category2_word6">Nikolaj Lie Kaas</string>
+    <string name="category2_word7">David Dencik</string>
+
+    <string name="category3_word1">Audi</string>
+    <string name="category3_word2">Nissan</string>
+    <string name="category3_word3">Fiat</string>
+    <string name="category3_word4">Ford</string>
+    <string name="category3_word5">Honda</string>
+    <string name="category3_word6">Hyundai</string>
+    <string name="category3_word7">Peugeot</string>
+
 </resources>
