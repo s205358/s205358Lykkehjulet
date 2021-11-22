@@ -45,15 +45,3 @@ class DataSource {
         )
     }
 }
-
-/*
-    <!--
-    <string name="category2_word1">Robert De Niro</string>
-    <string name="category2_word2">Al Pacino</string>
-    <string name="category2_word3">Joe Pesci</string>
-    <string name="category2_word4">Leonardo DiCaprio</string>
-    <string name="category2_word5">Ray Liotta</string>
-    <string name="category2_word6">Robert Duvall</string>
-    <string name="category2_word7">Matthew McConaughey</string>
-    -->
- */

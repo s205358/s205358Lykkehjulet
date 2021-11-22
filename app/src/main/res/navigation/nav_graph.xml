@@ -18,5 +18,41 @@
         android:id="@+id/chooseCategoryFragment"
         android:name="com.example.s205358lykkehjulet.ui.ChooseCategoryFragment"
         android:label="category_list_layout"
-        tools:layout="@layout/category_list_layout" />
+        tools:layout="@layout/category_list_layout" >
+        <action
+            android:id="@+id/action_chooseCategoryFragment_to_gameFragment"
+            app:destination="@id/gameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameFragment"
+        android:name="com.example.s205358lykkehjulet.ui.GameFragment"
+        android:label="game_layout"
+        tools:layout="@layout/game_layout" >
+        <argument android:name="name"
+            app:argType="reference" />
+        <action
+            android:id="@+id/action_gameFragment_to_gameWonFragment"
+            app:destination="@id/gameWonFragment" />
+        <action
+            android:id="@+id/action_gameFragment_to_gameLostFragment"
+            app:destination="@id/gameLostFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameLostFragment"
+        android:name="com.example.s205358lykkehjulet.ui.GameLostFragment"
+        android:label="game_lost_layout"
+        tools:layout="@layout/game_lost_layout" >
+        <action
+            android:id="@+id/action_gameLostFragment_to_startFragment"
+            app:destination="@id/startFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameWonFragment"
+        android:name="com.example.s205358lykkehjulet.ui.GameWonFragment"
+        android:label="game_won_layout"
+        tools:layout="@layout/game_won_layout" >
+        <action
+            android:id="@+id/action_gameWonFragment_to_startFragment"
+            app:destination="@id/startFragment" />
+    </fragment>
 </navigation>

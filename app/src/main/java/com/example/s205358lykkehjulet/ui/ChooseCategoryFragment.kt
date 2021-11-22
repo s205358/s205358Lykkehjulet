@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.s205358lykkehjulet.adapter.CategoryListAdapter
 import com.example.s205358lykkehjulet.databinding.CategoryListLayoutBinding
@@ -30,11 +31,14 @@ class ChooseCategoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = CategoryListAdapter {
-            //
+            val action = ChooseCategoryFragmentDirections.actionChooseCategoryFragmentToGameFragment(
+                it.name
+            )
+            findNavController().navigate(action)
         }
 
-        binding.list.layoutManager = LinearLayoutManager(this.context)
-        binding.list.adapter = adapter
-        adapter.submitList(sharedViewModel.allCategoriesAndWords)
+        binding.categoryList.layoutManager = LinearLayoutManager(this.context)
+        binding.categoryList.adapter = adapter
+        adapter.submitList(sharedViewModel.allCategories)
     }
 }
