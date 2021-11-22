@@ -9,5 +9,14 @@
         android:id="@+id/startFragment"
         android:name="com.example.s205358lykkehjulet.ui.StartFragment"
         android:label="start_layout"
-        tools:layout="@layout/start_layout" />
+        tools:layout="@layout/start_layout" >
+        <action
+            android:id="@+id/action_startFragment_to_chooseCategoryFragment"
+            app:destination="@id/chooseCategoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseCategoryFragment"
+        android:name="com.example.s205358lykkehjulet.ui.ChooseCategoryFragment"
+        android:label="category_list_layout"
+        tools:layout="@layout/category_list_layout" />
 </navigation>
