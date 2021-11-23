@@ -13,23 +13,33 @@ class GameViewModel: ViewModel() {
 
     val allCategories = DataSource().loadCategoriesWithWords();
 
-    private val _wheelPoints = MutableLiveData<Int>()
-    val wheelPoints: LiveData<Int> = _wheelPoints
+    private val _stake = MutableLiveData<Int>()
+    val stake: LiveData<Int>
+        get() = _stake
 
-    private val _wheelState = MutableLiveData<WheelStatus>()
-    val wheelState: LiveData<WheelStatus> = _wheelState
+    private val _wheelState = MutableLiveData<WheelStates>()
+    val wheelState: LiveData<WheelStates>
+        get() = _wheelState
 
-    private val _gameState = MutableLiveData<GameStatus>()
-    val gameState: LiveData<GameStatus> = _gameState
+    private val _gameState = MutableLiveData<GameStates>()
+    val gameState: LiveData<GameStates>
+        get() = _gameState
+
+    private val _guessedLetters = mutableListOf<Char>()
+    val guessedLetters: List<Char>
+        get() = _guessedLetters
 
     private val _randomWord = MutableLiveData<String>()
-    val randomWord: LiveData<String> = _randomWord
+    val randomWord: LiveData<String>
+        get() = _randomWord
 
     private val _points = MutableLiveData<Int>()
-    val points: LiveData<Int> = _points
+    val points: LiveData<Int>
+        get() = _points
 
     private val _lives = MutableLiveData<Int>()
-    val lives: LiveData<Int> = _lives
+    val lives: LiveData<Int>
+        get() = _lives
 
     fun getCategory(name: Int): Category? {
         return allCategories.find {
@@ -42,76 +52,101 @@ class GameViewModel: ViewModel() {
     }
 
     init {
-        resetGame()
+        restart()
     }
 
-    private fun resetGame() {
-        _wheelPoints.value = 0
-        _gameState.value = GameStatus.SPIN_WHEEL
-        spinWheel() // Random start
+    fun getHiddenWord(): String {
+        val chars = randomWord.value?.toCharArray()
+        val temp = chars?.map {
+            it to (guessedLetters.contains(it) || it.isWhitespace() || !it.isLetter())
+        }
+
+        var word = ""
+        temp?.forEach {
+            word += if (it.second) {
+                "${it.first} "
+            } else {
+                "_ "
+            }
+        }
+        return word
+    }
+
+    fun restart() {
+        _stake.value = 0
+        _gameState.value = GameStates.SPIN_WHEEL
+        spin() // Random start
         _randomWord.value = ""
         _points.value = NUM_OF_POINTS
         _lives.value = NUM_OF_LIVES
     }
 
-    fun spinWheel() {
+    fun spin() {
         when ((0..36).random()) {
             in 0..4 -> {
-                _wheelState.value = WheelStatus.EXTRA_TURN
+                _wheelState.value = WheelStates.EXTRA_TURN
             }
             in 5..7 -> {
-                _wheelState.value = WheelStatus.MISS_TURN
+                _wheelState.value = WheelStates.MISS_TURN
             }
             in 8..34 -> {
-                _wheelState.value = WheelStatus.POINTS
+                _wheelState.value = WheelStates.POINTS
             }
             else -> {
-                _wheelState.value = WheelStatus.BANKRUPTCY
+                _wheelState.value = WheelStates.BANKRUPTCY
             }
         }
-        updateGame()
+        play()
     }
 
-    fun guessLetter(letter: Char) {
-        _gameState.value = GameStatus.SPIN_WHEEL
-        // TODO
+    fun guess(letter: Char) {
+        _guessedLetters.add(letter)
+
+        val occurrences = letter.toString().count {
+            randomWord.value!!.contains(letter, ignoreCase = true)
+        }
+
+        if (occurrences > 0) {
+            val winnings = occurrences.times(stake.value!!)
+            _points.value = (_points.value)?.plus(winnings)
+        } else {
+            _lives.value = (_lives.value)?.minus(1)
+        }
+
+        _gameState.value = GameStates.SPIN_WHEEL
     }
 
-    private fun updateGame() {
+    private fun play() {
         when(wheelState.value) {
-            WheelStatus.EXTRA_TURN -> {
-                // Player gains a life
-                _lives.value?.plus(1)
-                // Player guess on letter
-                _gameState.value = GameStatus.GUESS_LETTER
+            WheelStates.EXTRA_TURN -> {
+                _lives.value = (_lives.value)?.plus(1)
+                _gameState.value = GameStates.GUESS_LETTER
             }
-            WheelStatus.MISS_TURN -> {
-                // Player lose a life
-                _lives.value?.minus(1)
-                // Player spin the wheel again
-                _gameState.value = GameStatus.SPIN_WHEEL
+            WheelStates.MISS_TURN -> {
+                _lives.value = (_lives.value)?.minus(1)
+                _gameState.value = GameStates.SPIN_WHEEL
             }
-            WheelStatus.POINTS -> {
-                // Player get the chance to win a random number points
-                _wheelPoints.value = (100..1000).random() // TODO: refactor
-                // Player guess on letter
-                _gameState.value = GameStatus.GUESS_LETTER
+            WheelStates.POINTS -> {
+                _stake.value = (100..1000).random() // TODO: refactor
+                _gameState.value = GameStates.GUESS_LETTER
             }
-            WheelStatus.BANKRUPTCY -> {
-                // Player lose all lives
+            WheelStates.BANKRUPTCY -> {
                 _lives.value = 0
             }
         }
+        if(lives.value?.equals(0) == true) {
+            _gameState.value = GameStates.GAME_LOST
+        }
     }
 
-    enum class GameStatus {
+    enum class GameStates {
         SPIN_WHEEL,
         GUESS_LETTER,
         GAME_WON,
         GAME_LOST
     }
 
-    enum class WheelStatus {
+    enum class WheelStates {
         EXTRA_TURN,
         MISS_TURN,
         BANKRUPTCY,

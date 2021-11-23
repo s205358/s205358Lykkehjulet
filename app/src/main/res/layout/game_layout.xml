@@ -9,7 +9,7 @@
     tools:context=".ui.GameFragment">
 
     <TextView
-        android:id="@+id/category_name"
+        android:id="@+id/category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
@@ -27,7 +27,7 @@
         android:layout_margin="@dimen/margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintRight_toLeftOf="@id/lives"
-        app:layout_constraintTop_toBottomOf="@id/category_name"
+        app:layout_constraintTop_toBottomOf="@id/category"
         android:hint="Points: 1000"
         />
 
@@ -38,12 +38,12 @@
         android:layout_margin="@dimen/margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@id/points"
-        app:layout_constraintTop_toBottomOf="@id/category_name"
+        app:layout_constraintTop_toBottomOf="@id/category"
         android:hint="Liv: 4"
         />
 
     <TextView
-        android:id="@+id/word_to_guess"
+        android:id="@+id/word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
@@ -53,42 +53,43 @@
         android:hint="s_me __dden __ord" />
 
     <Button
-        android:id="@+id/spin_the_wheel"
+        android:id="@+id/spin_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/word_to_guess"
+        app:layout_constraintTop_toBottomOf="@id/word"
         android:text="@string/spin_the_wheel" />
 
     <TextView
-        android:id="@+id/points_to_win"
+        android:id="@+id/stake"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spin_the_wheel"
+        app:layout_constraintTop_toBottomOf="@id/spin_action"
         android:hint="Du gætter for: x Points" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/player_guess"
+    <EditText
+        android:id="@+id/guess"
         android:layout_width="128dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guess_action"
-        app:layout_constraintTop_toBottomOf="@id/points_to_win" />
+        app:layout_constraintTop_toBottomOf="@id/stake"
+        android:inputType="textCapCharacters"/>
 
     <Button
         android:id="@+id/guess_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
-        app:layout_constraintStart_toEndOf="@id/player_guess"
+        app:layout_constraintStart_toEndOf="@id/guess"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/points_to_win"
+        app:layout_constraintTop_toBottomOf="@id/stake"
         android:text="@string/guess" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,32 +1,31 @@
 package com.example.s205358lykkehjulet.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.s205358lykkehjulet.R
 import com.example.s205358lykkehjulet.databinding.GameLayoutBinding
 import com.example.s205358lykkehjulet.model.Category
 import com.example.s205358lykkehjulet.model.getRandomWord
 import com.example.s205358lykkehjulet.viewmodel.GameViewModel
+import java.time.Duration
 
 class GameFragment : Fragment() {
 
     private val navigationArgs: GameFragmentArgs by navArgs()
-    private lateinit var category: Category
+    private lateinit var gameCategory: Category
 
     private var _binding: GameLayoutBinding? = null
     private val binding get() = _binding!!
 
     private val sharedViewModel: GameViewModel by activityViewModels()
 
-    /**
-     * Binds [GameFragment] to game_layout.xml using the auto-generated [GameLayoutBinding] via View Binding
-     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,89 +37,69 @@ class GameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO: Needs to be refactored
+        sharedViewModel.restart()
+
         val name = navigationArgs.name
-        category = sharedViewModel.getCategory(name)!!
-        val word = resources.getString(category.getRandomWord())
+        gameCategory = sharedViewModel.getCategory(name)!!
+        val word = resources.getString(gameCategory.getRandomWord())
         sharedViewModel.setRandomWord(word)
 
-        /**
-         * Player should not be able to guess before he/she have spun the wheel
-         */
-        binding.apply {
-            guessAction.isEnabled = false
+        binding.category.setText(gameCategory.name)
+
+        binding.spinAction.setOnClickListener {
+            spin()
         }
-        /**
-         * Initialize the UI
-         */
-        bind()
+        binding.guessAction.setOnClickListener {
+            guess()
+        }
+        sharedViewModel.gameState.observe(this.viewLifecycleOwner) {
+            binding.spinAction.isEnabled = it.equals(GameViewModel.GameStates.SPIN_WHEEL)
+            binding.guessAction.isEnabled = it.equals(GameViewModel.GameStates.GUESS_LETTER)
+        }
+        sharedViewModel.points.observe(this.viewLifecycleOwner) {
+            binding.points.text = it.toString()
+        }
+        sharedViewModel.lives.observe(this.viewLifecycleOwner) {
+            binding.lives.text = it.toString()
+        }
+        sharedViewModel.stake.observe(this.viewLifecycleOwner) {
+            binding.stake.text = it.toString()
+        }
     }
 
-    private fun spinWheel() {
-        /**
-         * Call [GameViewModel] to update state
-         */
-        sharedViewModel.spinWheel()
+    // TODO: Display guessed letters
+    // TODO: Validate input
+    // TODO: Display hidden word
+    // TODO: Possible to win
 
+    private fun spin() {
+        sharedViewModel.spin()
+
+        val text = when(sharedViewModel.wheelState.value) {
+            GameViewModel.WheelStates.EXTRA_TURN -> getString(R.string.extra_turn)
+            GameViewModel.WheelStates.MISS_TURN -> getString(R.string.miss_turn)
+            GameViewModel.WheelStates.POINTS -> getString(R.string.try_guess)
+            else -> getString(R.string.bankruptcy)
+        }
+        Toast.makeText(this.context, text, Toast.LENGTH_SHORT).show()
+
+        // TODO: Move else where... should be checked after each action
         when(sharedViewModel.gameState.value) {
-            /**
-             * Player must guess a letter:
-             * Disable ability to spin wheel.
-             * Enable ability to guess letter.
-             * Update UI for possible changes.
-             */
-            GameViewModel.GameStatus.GUESS_LETTER -> {
-                binding.spinTheWheel.isEnabled = false
-                binding.guessAction.isEnabled = true
-                bind()
-            }
-            /**
-             * Player has won and is navigated to [GameWonFragment]
-             */
-            GameViewModel.GameStatus.GAME_WON -> {
+            GameViewModel.GameStates.GAME_WON -> {
                 val action = GameFragmentDirections.actionGameFragmentToGameWonFragment()
                 findNavController().navigate(action)
             }
-            /**
-             * Player has lost and is navigated to [GameLostFragment]
-             */
-            GameViewModel.GameStatus.GAME_LOST -> {
+            GameViewModel.GameStates.GAME_LOST -> {
                 val action = GameFragmentDirections.actionGameFragmentToGameLostFragment()
                 findNavController().navigate(action)
             }
-            /**
-             * Player should spin the wheel, update UI for possible changes and do nothing.
-             */
             else -> {
-                bind()
+                // do nothing
             }
         }
     }
 
-    private fun guessLetter() {
-        // TODO: Validate input throw error if missing...
-        sharedViewModel.guessLetter('R')
-        binding.spinTheWheel.isEnabled = true
-        binding.guessAction.isEnabled = false
-        bind()
-        TODO()
-    }
-
-    private fun bind() {
-        binding.apply {
-            categoryName.setText(category.name)
-            wordToGuess.text = sharedViewModel.randomWord.value.toString()
-            lives.text = sharedViewModel.lives.value.toString()
-            points.text = sharedViewModel.points.value.toString()
-            pointsToWin.text = sharedViewModel.wheelPoints.value.toString()
-
-            spinTheWheel.setOnClickListener {
-                spinWheel()
-            }
-
-            guessAction.setOnClickListener {
-                guessLetter()
-            }
-        }
+    private fun guess() {
+        sharedViewModel.guess(binding.guess.text.toString().toCharArray()[0])
     }
 }

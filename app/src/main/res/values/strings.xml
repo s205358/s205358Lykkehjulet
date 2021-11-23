@@ -34,9 +34,15 @@
     <string name="category3_word6">Hyundai</string>
     <string name="category3_word7">Peugeot</string>
     <string name="choose_category">Vælg en kategori</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="spin_the_wheel">Drej lykkehjulet</string>
     <string name="guess">Gæt</string>
+
+    <string name="extra_turn">Du får et forsøg</string>
+    <string name="miss_turn">Du mister et forsøg</string>
+    <string name="try_guess">Gæt og vind point</string>
+    <string name="bankruptcy">Du gik bankerot</string>
 
 </resources>
