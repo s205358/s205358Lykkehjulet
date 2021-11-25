@@ -1,8 +1,6 @@
 package com.example.s205358lykkehjulet.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.s205358lykkehjulet.data.DataSource
 import com.example.s205358lykkehjulet.model.Category
 
@@ -14,24 +12,45 @@ class GameViewModel: ViewModel() {
     val allCategories = DataSource().loadCategoriesWithWords();
 
     private val _stake = MutableLiveData<Int>()
-    val stake: LiveData<Int>
-        get() = _stake
+    val stake: LiveData<Int> = _stake
 
-    private val _wheelState = MutableLiveData<WheelStates>()
-    val wheelState: LiveData<WheelStates>
-        get() = _wheelState
+    private val _wheelState = MutableLiveData<WheelState>()
+    val wheelState: LiveData<WheelState> = _wheelState
 
-    private val _gameState = MutableLiveData<GameStates>()
-    val gameState: LiveData<GameStates>
-        get() = _gameState
+    private val _gameState = MutableLiveData<GameState>()
+    val gameState: LiveData<GameState> = _gameState
 
-    private val _guessedLetters = mutableListOf<Char>()
-    val guessedLetters: List<Char>
-        get() = _guessedLetters
+    private val _letters = MutableLiveData<MutableList<Char>>()
+    val letters: LiveData<List<Char>> = Transformations.map(_letters) {
+        it.toList()
+    }
 
-    private val _randomWord = MutableLiveData<String>()
-    val randomWord: LiveData<String>
-        get() = _randomWord
+    private val _word = MutableLiveData<String>()
+    // https://developer.android.com/reference/android/arch/lifecycle/MediatorLiveData
+    // https://proandroiddev.com/livedata-transformations-4f120ac046fc
+    val word: LiveData<String> = MediatorLiveData<String>().apply {
+        fun update() {
+            val word = _word.value
+            val letters = _letters.value
+
+            value = word?.toCharArray()?.map {
+                it to (letters.toString().contains(it, ignoreCase = true) || !it.isLetter())
+            }?.map {
+                if (it.second) {
+                    it.first
+                } else {
+                    '_'
+                }
+            }?.joinToString(" ")
+        }
+        addSource(_word) {
+            update()
+        }
+        addSource(_letters) {
+            update()
+        }
+        update()
+    }
 
     private val _points = MutableLiveData<Int>()
     val points: LiveData<Int>
@@ -48,62 +67,67 @@ class GameViewModel: ViewModel() {
     }
 
     fun setRandomWord(word: String) {
-        _randomWord.value = word
+        _word.value = word
     }
 
     init {
         restart()
     }
 
-    fun getHiddenWord(): String {
-        val chars = randomWord.value?.toCharArray()
-        val temp = chars?.map {
-            it to (guessedLetters.contains(it) || it.isWhitespace() || !it.isLetter())
-        }
-
-        var word = ""
-        temp?.forEach {
-            word += if (it.second) {
-                "${it.first} "
-            } else {
-                "_ "
-            }
-        }
-        return word
-    }
-
     fun restart() {
         _stake.value = 0
-        _gameState.value = GameStates.SPIN_WHEEL
-        spin() // Random start
-        _randomWord.value = ""
+        _gameState.value = GameState.SPIN_WHEEL
+        _wheelState.value = null
+        _word.value = ""
         _points.value = NUM_OF_POINTS
         _lives.value = NUM_OF_LIVES
+        _letters.value = mutableListOf<Char>()
     }
 
     fun spin() {
         when ((0..36).random()) {
             in 0..4 -> {
-                _wheelState.value = WheelStates.EXTRA_TURN
+                _wheelState.value = WheelState.EXTRA_TURN
             }
             in 5..7 -> {
-                _wheelState.value = WheelStates.MISS_TURN
+                _wheelState.value = WheelState.MISS_TURN
             }
             in 8..34 -> {
-                _wheelState.value = WheelStates.POINTS
+                _wheelState.value = WheelState.POINTS
             }
             else -> {
-                _wheelState.value = WheelStates.BANKRUPTCY
+                _wheelState.value = WheelState.BANKRUPTCY
             }
         }
-        play()
+
+        when(wheelState.value) {
+            WheelState.EXTRA_TURN -> {
+                _stake.value = (100..1000).random()
+                _lives.value = (_lives.value)?.plus(1)
+                _gameState.value = GameState.GUESS_LETTER
+            }
+            WheelState.MISS_TURN -> {
+                _lives.value = (_lives.value)?.minus(1)
+                _gameState.value = GameState.SPIN_WHEEL
+            }
+            WheelState.POINTS -> {
+                _stake.value = (100..1000).random()
+                _gameState.value = GameState.GUESS_LETTER
+            }
+            WheelState.BANKRUPTCY -> {
+                _lives.value = 0
+                _gameState.value = GameState.GAME_LOST
+            }
+        }
     }
 
     fun guess(letter: Char) {
-        _guessedLetters.add(letter)
+        val temp = _letters.value ?: mutableListOf()
+        temp.add(letter.lowercaseChar())
+        _letters.value = temp
 
         val occurrences = letter.toString().count {
-            randomWord.value!!.contains(letter, ignoreCase = true)
+            word.value!!.contains(letter, ignoreCase = true)
         }
 
         if (occurrences > 0) {
@@ -113,40 +137,34 @@ class GameViewModel: ViewModel() {
             _lives.value = (_lives.value)?.minus(1)
         }
 
-        _gameState.value = GameStates.SPIN_WHEEL
-    }
-
-    private fun play() {
-        when(wheelState.value) {
-            WheelStates.EXTRA_TURN -> {
-                _lives.value = (_lives.value)?.plus(1)
-                _gameState.value = GameStates.GUESS_LETTER
-            }
-            WheelStates.MISS_TURN -> {
-                _lives.value = (_lives.value)?.minus(1)
-                _gameState.value = GameStates.SPIN_WHEEL
-            }
-            WheelStates.POINTS -> {
-                _stake.value = (100..1000).random() // TODO: refactor
-                _gameState.value = GameStates.GUESS_LETTER
-            }
-            WheelStates.BANKRUPTCY -> {
-                _lives.value = 0
-            }
-        }
         if(lives.value?.equals(0) == true) {
-            _gameState.value = GameStates.GAME_LOST
+            _gameState.value = GameState.GAME_LOST
+            return
         }
+
+        val lettersInWord = _word.value?.lowercase()?.toList()
+        val allFound = (letters.value?.containsAll(lettersInWord!!) == true)
+
+        if (allFound) {
+            _gameState.value = GameState.GAME_WON
+            return
+        }
+
+        _gameState.value = GameState.SPIN_WHEEL
     }
 
-    enum class GameStates {
+    fun isLetterValid(letter: Char): Boolean {
+        return (letters.value?.contains(letter.lowercaseChar()) == false)
+    }
+
+    enum class GameState {
         SPIN_WHEEL,
         GUESS_LETTER,
         GAME_WON,
         GAME_LOST
     }
 
-    enum class WheelStates {
+    enum class WheelState {
         EXTRA_TURN,
         MISS_TURN,
         BANKRUPTCY,

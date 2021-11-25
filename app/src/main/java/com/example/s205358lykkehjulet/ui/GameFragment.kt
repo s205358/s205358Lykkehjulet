@@ -14,7 +14,6 @@ import com.example.s205358lykkehjulet.databinding.GameLayoutBinding
 import com.example.s205358lykkehjulet.model.Category
 import com.example.s205358lykkehjulet.model.getRandomWord
 import com.example.s205358lykkehjulet.viewmodel.GameViewModel
-import java.time.Duration
 
 class GameFragment : Fragment() {
 
@@ -53,8 +52,8 @@ class GameFragment : Fragment() {
             guess()
         }
         sharedViewModel.gameState.observe(this.viewLifecycleOwner) {
-            binding.spinAction.isEnabled = it.equals(GameViewModel.GameStates.SPIN_WHEEL)
-            binding.guessAction.isEnabled = it.equals(GameViewModel.GameStates.GUESS_LETTER)
+            binding.spinAction.isEnabled = it.equals(GameViewModel.GameState.SPIN_WHEEL)
+            binding.guessAction.isEnabled = it.equals(GameViewModel.GameState.GUESS_LETTER)
         }
         sharedViewModel.points.observe(this.viewLifecycleOwner) {
             binding.points.text = it.toString()
@@ -65,41 +64,46 @@ class GameFragment : Fragment() {
         sharedViewModel.stake.observe(this.viewLifecycleOwner) {
             binding.stake.text = it.toString()
         }
+        sharedViewModel.word.observe(this.viewLifecycleOwner) {
+            binding.word.text = it.toString()
+        }
+        sharedViewModel.letters.observe(this.viewLifecycleOwner) {
+            binding.letters.text = it.toString()
+        }
     }
-
-    // TODO: Display guessed letters
-    // TODO: Validate input
-    // TODO: Display hidden word
-    // TODO: Possible to win
 
     private fun spin() {
         sharedViewModel.spin()
-
         val text = when(sharedViewModel.wheelState.value) {
-            GameViewModel.WheelStates.EXTRA_TURN -> getString(R.string.extra_turn)
-            GameViewModel.WheelStates.MISS_TURN -> getString(R.string.miss_turn)
-            GameViewModel.WheelStates.POINTS -> getString(R.string.try_guess)
+            GameViewModel.WheelState.EXTRA_TURN -> getString(R.string.extra_turn)
+            GameViewModel.WheelState.MISS_TURN -> getString(R.string.miss_turn)
+            GameViewModel.WheelState.POINTS -> getString(R.string.try_guess)
             else -> getString(R.string.bankruptcy)
         }
         Toast.makeText(this.context, text, Toast.LENGTH_SHORT).show()
-
-        // TODO: Move else where... should be checked after each action
-        when(sharedViewModel.gameState.value) {
-            GameViewModel.GameStates.GAME_WON -> {
-                val action = GameFragmentDirections.actionGameFragmentToGameWonFragment()
-                findNavController().navigate(action)
-            }
-            GameViewModel.GameStates.GAME_LOST -> {
-                val action = GameFragmentDirections.actionGameFragmentToGameLostFragment()
-                findNavController().navigate(action)
-            }
-            else -> {
-                // do nothing
-            }
-        }
+        update()
     }
 
     private fun guess() {
-        sharedViewModel.guess(binding.guess.text.toString().toCharArray()[0])
+        val input = binding.guess.text.toString()
+        if (input.length == 1 && input[0].isLetter()) {
+            if (sharedViewModel.isLetterValid(input[0])) {
+                sharedViewModel.guess(input[0])
+            }
+        }
+        update()
+    }
+
+    private fun update() {
+        when(sharedViewModel.gameState.value) {
+            GameViewModel.GameState.GAME_WON -> {
+                val action = GameFragmentDirections.actionGameFragmentToGameWonFragment()
+                findNavController().navigate(action)
+            }
+            GameViewModel.GameState.GAME_LOST -> {
+                val action = GameFragmentDirections.actionGameFragmentToGameLostFragment()
+                findNavController().navigate(action)
+            }
+        }
     }
 }
