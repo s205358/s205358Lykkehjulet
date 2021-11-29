@@ -33,19 +33,19 @@
     <string name="category3_word5">Honda</string>
     <string name="category3_word6">Hyundai</string>
     <string name="category3_word7">Peugeot</string>
-    <string name="choose_category">Vælg en kategori</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="spin_the_wheel">Drej lykkehjulet</string>
+    <!-- General -->
+    <string name="spin">Drej</string>
     <string name="guess">Gæt</string>
-
+    <string name="points">Antal point: %s</string>
+    <string name="lives">Antal liv: %s</string>
+    <string name="choose_category">Vælg en kategori</string>
     <string name="extra_turn">Du får et forsøg</string>
     <string name="miss_turn">Du mister et forsøg</string>
     <string name="try_guess">Gæt og vind point</string>
     <string name="bankruptcy">Du gik bankerot</string>
     <string name="play_again">Spil Igen</string>
-    <string name="game_won">Vundet</string>
+    <string name="game_won">Spil Vundet</string>
     <string name="game_lost">Spil Tabt</string>
 
 </resources>

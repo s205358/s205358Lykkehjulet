@@ -56,10 +56,10 @@ class GameFragment : Fragment() {
             binding.guessAction.isEnabled = it.equals(GameViewModel.GameState.GUESS_LETTER)
         }
         sharedViewModel.points.observe(this.viewLifecycleOwner) {
-            binding.points.text = it.toString()
+            binding.points.text = getString(R.string.points, it.toString())
         }
         sharedViewModel.lives.observe(this.viewLifecycleOwner) {
-            binding.lives.text = it.toString()
+            binding.lives.text = getString(R.string.lives, it.toString())
         }
         sharedViewModel.stake.observe(this.viewLifecycleOwner) {
             binding.stake.text = it.toString()

@@ -27,7 +27,7 @@ class GameLostFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.playAgain.setOnClickListener {
-            val action = GameLostFragmentDirections.actionGameLostFragmentToStartFragment();
+            val action = GameLostFragmentDirections.actionGameLostFragmentToStartFragment()
             findNavController().navigate(action)
         }
     }

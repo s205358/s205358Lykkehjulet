@@ -9,7 +9,7 @@ private const val NUM_OF_LIVES = 5
 
 class GameViewModel: ViewModel() {
 
-    val allCategories = DataSource().loadCategoriesWithWords();
+    val allCategories = DataSource().loadCategoriesWithWords()
 
     private val _stake = MutableLiveData<Int>()
     val stake: LiveData<Int> = _stake
@@ -145,7 +145,7 @@ class GameViewModel: ViewModel() {
             return
         }
 
-        val lettersInWord = _word.value?.lowercase()?.toList()
+        val lettersInWord = _word.value?.lowercase()?.trim(' ', '-')?.toList()
         val allFound = (letters.value?.containsAll(lettersInWord!!) == true)
 
         if (allFound) {

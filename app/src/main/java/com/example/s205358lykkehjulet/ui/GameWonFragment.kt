@@ -27,7 +27,7 @@ class GameWonFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.playAgain.setOnClickListener {
-            val action = GameWonFragmentDirections.actionGameWonFragmentToStartFragment();
+            val action = GameWonFragmentDirections.actionGameWonFragmentToStartFragment()
             findNavController().navigate(action)
         }
     }
