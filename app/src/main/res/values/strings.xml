@@ -44,5 +44,8 @@
     <string name="miss_turn">Du mister et forsøg</string>
     <string name="try_guess">Gæt og vind point</string>
     <string name="bankruptcy">Du gik bankerot</string>
+    <string name="play_again">Spil Igen</string>
+    <string name="game_won">Vundet</string>
+    <string name="game_lost">Spil Tabt</string>
 
 </resources>

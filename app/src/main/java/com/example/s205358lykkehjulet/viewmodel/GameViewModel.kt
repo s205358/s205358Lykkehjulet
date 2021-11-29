@@ -108,15 +108,18 @@ class GameViewModel: ViewModel() {
             }
             WheelState.MISS_TURN -> {
                 _lives.value = (_lives.value)?.minus(1)
-                _gameState.value = GameState.SPIN_WHEEL
+                if(lives.value?.equals(0) == true) {
+                    _gameState.value = GameState.GAME_LOST
+                } else {
+                    _gameState.value = GameState.SPIN_WHEEL
+                }
             }
             WheelState.POINTS -> {
                 _stake.value = (100..1000).random()
                 _gameState.value = GameState.GUESS_LETTER
             }
             WheelState.BANKRUPTCY -> {
-                _lives.value = 0
-                _gameState.value = GameState.GAME_LOST
+                _points.value = 0
             }
         }
     }
