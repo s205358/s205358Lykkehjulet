@@ -188,10 +188,6 @@ class GameViewModel : ViewModel() {
             return
         }
 
-
-        // val lettersInWord = _word.value?.lowercase()?.trim(' ', '-')?.toList()
-        // val allFound = (letters.value?.containsAll(lettersInWord!!) == true)
-
         // Check if letters guessed contains all letters in word by santizing those and converting them to list
         if (letters.value?.containsAll(_word.value?.lowercase()?.filterNot {
                 (it == ' ') || (it == '-')
