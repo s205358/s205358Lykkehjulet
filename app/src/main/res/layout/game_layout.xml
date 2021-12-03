@@ -1,105 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/margin"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.GameFragment">
+
+    <Button
+        android:id="@+id/back_to_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/back_to_start"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
         android:id="@+id/category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:hint="Bilmærker"
         android:textAppearance="?textAppearanceHeadline4"
-        />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back_to_start" />
 
     <TextView
         android:id="@+id/points"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/lives"
-        app:layout_constraintTop_toBottomOf="@id/category"
         android:hint="Points: 1000"
-        />
+        app:layout_constraintRight_toLeftOf="@id/lives"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/category" />
 
     <TextView
         android:id="@+id/lives"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
+        android:hint="Liv: 4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@id/points"
-        app:layout_constraintTop_toBottomOf="@id/category"
-        android:hint="Liv: 4"
-        />
+        app:layout_constraintTop_toBottomOf="@id/category" />
 
     <TextView
         android:id="@+id/word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
+        android:hint="s_me __dden __ord"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lives"
-        android:hint="s_me __dden __ord" />
+        app:layout_constraintTop_toBottomOf="@id/lives" />
 
     <Button
         android:id="@+id/spin_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
+        android:text="@string/spin"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/word"
-        android:text="@string/spin" />
+        app:layout_constraintTop_toBottomOf="@id/word" />
 
     <TextView
         android:id="@+id/stake"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
+        android:hint="Du gætter for: x Points"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spin_action"
-        android:hint="Du gætter for: x Points" />
+        app:layout_constraintTop_toBottomOf="@id/spin_action" />
 
     <EditText
         android:id="@+id/guess"
         android:layout_width="128dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
-        app:layout_constraintStart_toStartOf="parent"
+        android:inputType="textCapCharacters"
         app:layout_constraintEnd_toStartOf="@id/guess_action"
-        app:layout_constraintTop_toBottomOf="@id/stake"
-        android:inputType="textCapCharacters"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/stake" />
 
     <Button
         android:id="@+id/guess_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
-        app:layout_constraintStart_toEndOf="@id/guess"
+        android:text="@string/guess"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/stake"
-        android:text="@string/guess" />
+        app:layout_constraintStart_toEndOf="@id/guess"
+        app:layout_constraintTop_toBottomOf="@id/stake" />
 
     <TextView
-        android:id="@+id/letters"
+        android:id="@+id/letter_list_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin"
+        android:text="@string/already_guessed"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guess_action"
-        android:hint="[a, b, c, d, ...]" />
+        app:layout_constraintTop_toBottomOf="@id/guess_action" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/letter_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layoutManager="LinearLayoutManager"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/letter_list_text"
+        tools:listitem="@layout/letter_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

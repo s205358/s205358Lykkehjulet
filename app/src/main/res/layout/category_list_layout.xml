@@ -24,10 +24,10 @@
         android:id="@+id/category_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/category_title"
+        app:layoutManager="LinearLayoutManager"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layoutManager="LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/category_title"
         tools:listitem="@layout/category_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

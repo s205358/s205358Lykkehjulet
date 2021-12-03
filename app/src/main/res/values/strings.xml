@@ -38,6 +38,7 @@
     <string name="spin">Drej</string>
     <string name="guess">Gæt</string>
     <string name="points">Antal point: %s</string>
+    <string name="stake">Du kan vinde: %s</string>
     <string name="lives">Antal liv: %s</string>
     <string name="choose_category">Vælg en kategori</string>
     <string name="extra_turn">Du får et forsøg</string>
@@ -47,5 +48,9 @@
     <string name="play_again">Spil Igen</string>
     <string name="game_won">Spil Vundet</string>
     <string name="game_lost">Spil Tabt</string>
+    <string name="error">Skriv kun et bogstav, som du ikke allerede har gættet på</string>
+    <string name="ok">Prøv igen</string>
+    <string name="already_guessed">Du har allerede gætte på:</string>
+    <string name="back_to_start">Tilbage til start</string>
 
 </resources>
