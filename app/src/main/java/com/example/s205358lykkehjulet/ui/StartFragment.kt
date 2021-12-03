@@ -1,13 +1,11 @@
 package com.example.s205358lykkehjulet.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.s205358lykkehjulet.R
-import com.example.s205358lykkehjulet.databinding.CategoryListLayoutBinding
 import com.example.s205358lykkehjulet.databinding.StartLayoutBinding
 
 class StartFragment : Fragment() {

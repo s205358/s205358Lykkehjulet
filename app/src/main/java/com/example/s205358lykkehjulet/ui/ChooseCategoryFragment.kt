@@ -31,9 +31,10 @@ class ChooseCategoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = CategoryListAdapter {
-            val action = ChooseCategoryFragmentDirections.actionChooseCategoryFragmentToGameFragment(
-                it.name
-            )
+            val action =
+                ChooseCategoryFragmentDirections.actionChooseCategoryFragmentToGameFragment(
+                    it.name
+                )
             findNavController().navigate(action)
         }
 
